@@ -1,7 +1,8 @@
-#include <iostream>
+#include "SolarSystem2D/Core/Application.hpp"
 
 int main()
 {
-    std::cout << "SolarSystem2D started" << "\n";
+    SolarSystem2D::Application app;
+    app.run();
     return 0;
 }

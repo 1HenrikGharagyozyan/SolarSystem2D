@@ -6,7 +6,15 @@ namespace SolarSystem2D
 
     void Application::run()
     {
-        std::cout << "Application is running!" << "\n";
+        auto sun = m_World.createEntity();
+        auto& transform = m_World.addTransform(sun);
+
+        transform.x = 0.0f;
+        transform.y = 0.0f;
+
+        std::cout << "World initialized with " 
+                  << m_World.entities().size() 
+                  << " entity(ies)." << "\n";
     }
 
 } // namespace SolarSystem2D

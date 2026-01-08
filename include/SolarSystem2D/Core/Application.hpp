@@ -1,4 +1,5 @@
 #pragma once
+#include "SolarSystem2D/Simulation/World.hpp"
 
 namespace SolarSystem2D 
 {
@@ -7,6 +8,9 @@ namespace SolarSystem2D
     {
     public: 
         void run();
+    
+    private:
+        World m_World;
     };
 
 }

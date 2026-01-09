@@ -7,6 +7,12 @@ namespace SolarSystem2D
         return static_cast<EntityID>(m_Transforms.size());
     }
 
+    Acceleration& World::addAcceleration(EntityID)
+    {
+        m_Accelerations.emplace_back();
+        return m_Accelerations.back();
+    }
+
     Transform2D& World::addTransform(EntityID)
     {
         m_Transforms.emplace_back();
@@ -19,12 +25,10 @@ namespace SolarSystem2D
         return m_RigidBodies.back();
     }
 
-    std::vector<EntityID> World::entities() const
+
+    Acceleration& World::acceleration(EntityID id)
     {
-        std::vector<EntityID> result;
-        for (EntityID i = 0; i < m_Transforms.size(); ++i)
-            result.push_back(i);
-        return result;
+        return m_Accelerations[id];
     }
 
     Transform2D& World::transform(EntityID id)
@@ -35,5 +39,13 @@ namespace SolarSystem2D
     RigidBody& World::rigidBody(EntityID id)
     {
         return m_RigidBodies[id];
+    }
+
+    std::vector<EntityID> World::entities() const
+    {
+        std::vector<EntityID> result;
+        for (EntityID i = 0; i < m_Transforms.size(); ++i)
+            result.push_back(i);
+        return result;
     }
 }

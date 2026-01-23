@@ -1,7 +1,8 @@
-#include <iostream>
+#include "core/Application.hpp"
 
 int main()
 {
-    std::cout << "Solar System 2D starting...\n";
+    Application app;
+    app.run();
     return 0;
 }

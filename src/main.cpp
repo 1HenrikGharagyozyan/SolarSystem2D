@@ -2,7 +2,7 @@
 
 int main()
 {
-    Application app;
+    SolarSystem2D::Application app;
     app.run();
     return 0;
 }

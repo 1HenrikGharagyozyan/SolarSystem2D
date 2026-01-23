@@ -1,18 +1,23 @@
 #pragma once
 
-class Application 
+namespace SolarSystem2D
 {
-public:
-    Application();
-    ~Application();
 
-    void run();
+    class Application 
+    {
+    public:
+        Application();
+        ~Application();
 
-private:
-    void init();
-    void update();
-    void shutdown();
+        void run();
 
-private:
-    bool m_running;
-};
+    private:
+        void init();
+        void update();
+        void shutdown();
+
+    private:
+        bool m_running;
+    };
+    
+}

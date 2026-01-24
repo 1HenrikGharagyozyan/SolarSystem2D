@@ -1,7 +1,10 @@
 #pragma once
 
+#include <memory>
+
 namespace SolarSystem2D
 {
+    class Window;
 
     class Application 
     {
@@ -18,6 +21,7 @@ namespace SolarSystem2D
 
     private:
         bool m_running;
+        std::shared_ptr<Window> m_window;
     };
     
 }

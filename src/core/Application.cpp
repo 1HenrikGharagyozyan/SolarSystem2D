@@ -1,5 +1,6 @@
 #include "Application.hpp"
 
+#include "Window.hpp"   
 #include "Time.hpp"
 
 #include <iostream>
@@ -38,6 +39,7 @@ namespace SolarSystem2D
 
     void Application::init()
     {
+        m_window = std::make_shared<Window>(1280, 720, "SolarSystem2D");
         std::cout << "Application initialized\n";
     }
 
@@ -47,9 +49,7 @@ namespace SolarSystem2D
         {
             Time::Update();
             update(Time::GetDeltaTime());
-
-            if (Time::GetDeltaTime() > 1.0f) // Example condition to stop the loop
-                m_running = false;
+            m_window->PoolEvents();
         }
     }
 

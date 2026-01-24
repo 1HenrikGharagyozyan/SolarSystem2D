@@ -13,7 +13,7 @@ namespace SolarSystem2D
 
     private:
         void init();
-        void update();
+        void update(float deltaTime);
         void shutdown();
 
     private:

@@ -15,6 +15,7 @@ namespace SolarSystem2D
 
         void PoolEvents();
         bool ShouldClose() const;
+        void SwapBuffers();
 
     private:
         void Init();

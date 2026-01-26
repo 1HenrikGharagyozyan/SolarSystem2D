@@ -17,11 +17,12 @@ namespace SolarSystem2D
     private:
         void init();
         void update(float deltaTime);
+        void render();
         void shutdown();
 
     private:
         bool m_running;
-        std::shared_ptr<Window> m_window;
+        std::unique_ptr<Window> m_window;
     };
     
 }

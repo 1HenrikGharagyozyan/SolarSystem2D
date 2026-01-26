@@ -1,10 +1,14 @@
 #include "Application.hpp"
 
-#include "Window.hpp"   
+#include "Window.hpp"
 #include "Time.hpp"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <chrono>
+#include <stdexcept>
 
 float SolarSystem2D::Time::s_DeltaTime = 0.0f;
 
@@ -24,7 +28,7 @@ namespace SolarSystem2D
     float Time::GetDeltaTime()
     {
         return s_DeltaTime;
-    }   
+    }
 
     Application::Application()
         : m_running(true)
@@ -39,23 +43,31 @@ namespace SolarSystem2D
 
     void Application::init()
     {
-        m_window = std::make_shared<Window>(1280, 720, "SolarSystem2D");
+        m_window = std::make_unique<Window>(1280, 720, "SolarSystem2D");
         std::cout << "Application initialized\n";
     }
 
     void Application::run()
     {
-        while (m_running) 
+        while (m_running)
         {
-            Time::Update();
-            update(Time::GetDeltaTime());
+            update(0.0f);
+            render();
             m_window->PoolEvents();
         }
     }
 
     void Application::update(float deltaTime)
     {
-        std::cout << "Update deltaTime: " << deltaTime << " seconds\n";
+        (void)deltaTime;
+    }
+
+    void Application::render()
+    {
+        glClearColor(0.05f, 0.05f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        m_window->SwapBuffers();
     }
 
     void Application::shutdown()

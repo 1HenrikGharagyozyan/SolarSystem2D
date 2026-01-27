@@ -1,34 +1,10 @@
 #include "Application.hpp"
-
 #include "Window.hpp"
 #include "Time.hpp"
+#include "renderer/Renderer.hpp"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-#include <chrono>
-#include <stdexcept>
-
-float SolarSystem2D::Time::s_DeltaTime = 0.0f;
-
-namespace SolarSystem2D
+namespace SolarSystem2D 
 {
-
-    static auto s_LastTime = std::chrono::high_resolution_clock::now();
-
-    void Time::Update()
-    {
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> delta = currentTime - s_LastTime;
-        s_DeltaTime = delta.count();
-        s_LastTime = currentTime;
-    }
-
-    float Time::GetDeltaTime()
-    {
-        return s_DeltaTime;
-    }
 
     Application::Application()
         : m_running(true)
@@ -43,36 +19,33 @@ namespace SolarSystem2D
 
     void Application::init()
     {
-        m_window = std::make_unique<Window>(1280, 720, "SolarSystem2D");
-        std::cout << "Application initialized\n";
+        m_window = std::make_unique<Window>(1280, 720, "Solar System 2D");
+        Renderer::init();
     }
 
     void Application::run()
     {
-        while (m_running)
+        while (m_running && !m_window->shouldClose()) 
         {
-            update(0.0f);
+            Time::update();
+            update(Time::deltaTime());
             render();
-            m_window->PoolEvents();
+            m_window->pollEvents();
         }
     }
 
-    void Application::update(float deltaTime)
+    void Application::update(float)
     {
-        (void)deltaTime;
     }
 
     void Application::render()
     {
-        glClearColor(0.05f, 0.05f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        m_window->SwapBuffers();
+        Renderer::beginFrame();
+        m_window->swapBuffers();
     }
 
     void Application::shutdown()
     {
-        std::cout << "Application shutdown\n";
     }
 
-}
+} // namespace SolarSystem2D

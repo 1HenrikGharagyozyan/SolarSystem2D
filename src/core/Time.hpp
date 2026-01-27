@@ -1,17 +1,16 @@
 #pragma once
 
-namespace SolarSystem2D
+namespace SolarSystem2D 
 {
-    
-    class Time
+
+    class Time 
     {
     public:
-        static float GetDeltaTime();
-        static void Update();
-        
+        static void update();
+        static float deltaTime();
+
     private:
-        static float s_DeltaTime;
+        static float s_deltaTime;
     };
 
 } 
-    

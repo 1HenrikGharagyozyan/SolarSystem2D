@@ -2,63 +2,62 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stdexcept>
 
-#include <iostream>
-
-namespace SolarSystem2D
+namespace SolarSystem2D 
 {
 
-    Window::Window(int width, int height, const std::string &title)
-        : m_Width(width), m_Height(height), m_Title(title), m_Window(nullptr)
+    Window::Window(int width, int height, const std::string& title)
+        : m_width(width)
+        , m_height(height)
+        , m_title(title)
+        , m_window(nullptr)
     {
-        Init();
+        init();
     }
 
     Window::~Window()
     {
-        glfwDestroyWindow(m_Window);
+        glfwDestroyWindow(m_window);
         glfwTerminate();
     }
 
-    void Window::Init()
+    void Window::init()
     {
-        if (!glfwInit())
-        {
-            std::cerr << "Failed to initialize GLFW\n";
-            return;
-        }
+        if (!glfwInit()) 
+            throw std::runtime_error("Failed to initialize GLFW");
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        m_Window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), nullptr, nullptr);
-        if (!m_Window)
+        m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+
+        if (!m_window) 
         {
-            std::cerr << "Failed to create GLFW window\n";
             glfwTerminate();
-            return;
+            throw std::runtime_error("Failed to create GLFW window");
         }
 
-        glfwMakeContextCurrent(m_Window);
+        glfwMakeContextCurrent(m_window);
 
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
             throw std::runtime_error("Failed to initialize GLAD");
     }
 
-    void Window::PoolEvents()
+    void Window::pollEvents()
     {
         glfwPollEvents();
     }
 
-    bool Window::ShouldClose() const
+    bool Window::shouldClose() const
     {
-        return glfwWindowShouldClose(m_Window);
+        return glfwWindowShouldClose(m_window);
     }
 
-    void Window::SwapBuffers()
+    void Window::swapBuffers()
     {
-        glfwSwapBuffers(m_Window);
+        glfwSwapBuffers(m_window);
     }
 
-}
+} 

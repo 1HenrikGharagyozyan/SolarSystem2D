@@ -4,28 +4,27 @@
 
 struct GLFWwindow;
 
-namespace SolarSystem2D
+namespace SolarSystem2D 
 {
 
-    class Window
+    class Window 
     {
     public:
         Window(int width, int height, const std::string& title);
         ~Window();
 
-        void PoolEvents();
-        bool ShouldClose() const;
-        void SwapBuffers();
+        void pollEvents();
+        bool shouldClose() const;
+        void swapBuffers();
 
     private:
-        void Init();
+        void init();
 
     private:
-        int m_Width;
-        int m_Height;
-        std::string m_Title;
-
-        GLFWwindow* m_Window;
+        int m_width;
+        int m_height;
+        std::string m_title;
+        GLFWwindow* m_window;
     };
 
-}
+} 

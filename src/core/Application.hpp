@@ -2,8 +2,9 @@
 
 #include <memory>
 
-namespace SolarSystem2D
+namespace SolarSystem2D 
 {
+
     class Window;
 
     class Application 
@@ -16,7 +17,7 @@ namespace SolarSystem2D
 
     private:
         void init();
-        void update(float deltaTime);
+        void update(float dt);
         void render();
         void shutdown();
 
@@ -24,5 +25,5 @@ namespace SolarSystem2D
         bool m_running;
         std::unique_ptr<Window> m_window;
     };
-    
-}
+
+} 

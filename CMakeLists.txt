@@ -28,7 +28,16 @@ target_include_directories(glad
 add_executable(SolarSystem2D
     src/main.cpp
     src/core/Application.cpp
+    src/core/Application.hpp
     src/core/Window.cpp
+    src/core/Window.hpp
+    src/core/Time.cpp
+    src/core/Time.hpp
+    src/renderer/Renderer.cpp
+    src/renderer/Renderer.hpp
+    src/renderer/RenderCommand.cpp
+    src/renderer/RenderCommand.hpp
+    src/renderer/Camera.hpp
 )
 
 target_include_directories(SolarSystem2D

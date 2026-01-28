@@ -1,13 +1,16 @@
 #pragma once
 
-namespace SolarSystem2D
+#include "OrthographicCamera.hpp"
+
+namespace SolarSystem2D 
 {
 
-    class Renderer2D
+    class Renderer2D 
     {
     public:
         static void init();
-        static void drawTriangle();
+        static void beginScene(const OrthographicCamera& camera);
+        static void drawQuad();
     };
 
-}
+} 

@@ -44,8 +44,9 @@ namespace SolarSystem2D
 
     void Application::render()
     {
-        Renderer::beginFrame();
-        Renderer2D::drawTriangle();
+        OrthographicCamera camera(-1.6f, 1.6f, -0.9f, 0.9f);
+        Renderer2D::beginScene(camera);
+        Renderer2D::drawQuad();
         m_window->swapBuffers();
     }
 

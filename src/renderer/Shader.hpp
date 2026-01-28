@@ -15,6 +15,8 @@ namespace SolarSystem2D
         void bind() const;
         void unbind() const;
 
+        const uint32_t getID() const { return m_RendererID; } 
+
     private:
         uint32_t m_RendererID;
     };

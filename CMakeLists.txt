@@ -27,12 +27,18 @@ add_executable(SolarSystem2D
     src/renderer/VertexArray.cpp
     src/renderer/Shader.cpp
     src/renderer/Renderer2D.cpp
+    src/renderer/OrthographicCamera.cpp
 )
 
 target_include_directories(SolarSystem2D
-    PRIVATE src
+    PRIVATE 
+        src
+        external/glm
 )
 
 target_link_libraries(SolarSystem2D
-    PRIVATE glad glfw GL
+    PRIVATE 
+        glad 
+        glfw 
+        GL
 )

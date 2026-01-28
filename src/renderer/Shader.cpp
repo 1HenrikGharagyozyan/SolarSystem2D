@@ -1,34 +1,37 @@
 #include "Shader.hpp"
 
 #include <glad/glad.h>
-#include <stdexcept>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <unordered_map>
 
 namespace SolarSystem2D
 {
 
-    static uint32_t compileShader(uint32_t type, const std::string& src)
+    static unsigned int compileShader(unsigned int type, const std::string &source)
     {
-        uint32_t id = glCreateShader(type);
-        const char* source = src.c_str();
-        glShaderSource(id, 1, &source, nullptr);
+        unsigned int id = glCreateShader(type);
+        const char *src = source.c_str();
+        glShaderSource(id, 1, &src, nullptr);
         glCompileShader(id);
 
         int success;
         glGetShaderiv(id, GL_COMPILE_STATUS, &success);
         if (!success)
         {
-            char info[32];
-            glGetShaderInfoLog(id, 512, nullptr, info);
-            throw std::runtime_error(info);
+            char infoLog[1024];
+            glGetShaderInfoLog(id, 1024, nullptr, infoLog);
+            // In the real project there will be logger/assert
         }
+
         return id;
     }
 
-    Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
+    Shader::Shader(const std::string &vertexSrc, const std::string &fragmentSrc)
     {
-        uint32_t program = glCreateProgram();
-        uint32_t vs = compileShader(GL_VERTEX_SHADER, vertexSrc);
-        uint32_t fs = compileShader(GL_FRAGMENT_SHADER, fragmentSrc);
+        unsigned int program = glCreateProgram();
+        unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexSrc);
+        unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentSrc);
 
         glAttachShader(program, vs);
         glAttachShader(program, fs);
@@ -54,4 +57,22 @@ namespace SolarSystem2D
     {
         glUseProgram(0);
     }
+
+    int Shader::getUniformLocation(const std::string &name)
+    {
+        return glGetUniformLocation(m_RendererID, name.c_str());
+    }
+
+    void Shader::setMat4(const std::string &name, const glm::mat4 &matrix)
+    {
+        bind();
+        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+
+    void Shader::setFloat4(const std::string &name, const glm::vec4 &value)
+    {
+        bind();
+        glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
+    }
+
 }

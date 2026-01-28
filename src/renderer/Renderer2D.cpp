@@ -4,8 +4,6 @@
 #include "Buffer.hpp"
 #include "Shader.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-
 #include <glad/glad.h>
 
 #include <memory>
@@ -15,25 +13,19 @@ namespace SolarSystem2D
 
     static std::shared_ptr<VertexArray> s_QuadVAO;
     static std::shared_ptr<Shader> s_Shader;
-    static glm::mat4 s_ViewProjection;
 
     void Renderer2D::init()
     {
         float vertices[] = {
-            // pos
             -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.5f,  0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.5f,  0.5f, 0.0f,
             -0.5f,  0.5f, 0.0f
         };
 
-        uint32_t indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
+        uint32_t indices[] = { 0, 1, 2, 2, 3, 0 };
 
         s_QuadVAO = std::make_shared<VertexArray>();
-
         auto vb = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
         auto ib = std::make_shared<IndexBuffer>(indices, 6);
 
@@ -47,8 +39,7 @@ namespace SolarSystem2D
 
                 uniform mat4 u_ViewProjection;
 
-                void main()
-                {
+                void main() {
                     gl_Position = u_ViewProjection * vec4(aPos, 1.0);
                 }
             )";
@@ -57,9 +48,8 @@ namespace SolarSystem2D
                 #version 330 core
 
                 out vec4 FragColor;
-                
-                void main()
-                {
+
+                void main() {
                     FragColor = vec4(0.2, 0.7, 1.0, 1.0);
                 }
             )";
@@ -69,14 +59,7 @@ namespace SolarSystem2D
 
     void Renderer2D::beginScene(const OrthographicCamera& camera)
     {
-        s_ViewProjection = camera.getViewProjection();
-        s_Shader->bind();
-        glUniformMatrix4fv(
-            glGetUniformLocation(s_Shader->getID(), "u_ViewProjection"),
-            1,
-            GL_FALSE,
-            glm::value_ptr(s_ViewProjection)
-        );
+        s_Shader->setMat4("u_ViewProjection", camera.getViewProjection());
     }
 
     void Renderer2D::drawQuad()
@@ -86,4 +69,4 @@ namespace SolarSystem2D
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
-} 
+} // namespace SolarSystem2D

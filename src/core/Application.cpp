@@ -46,7 +46,18 @@ namespace SolarSystem2D
     {
         OrthographicCamera camera(-1.6f, 1.6f, -0.9f, 0.9f);
         Renderer2D::beginScene(camera);
-        Renderer2D::drawQuad();
+        Transform t1;
+        t1.position = { 0.0f, 0.0f, 0.0f };
+        t1.scale = { 0.5f, 0.5f, 1.0f };
+
+        Renderer2D::drawQuad(t1);
+
+        Transform t2;
+        t2.position = { 0.8f, 0.0f, 0.0f };
+        t2.scale = { 0.2f, 0.2f, 1.0f };
+
+        Renderer2D::drawQuad(t2);
+
         m_window->swapBuffers();
     }
 

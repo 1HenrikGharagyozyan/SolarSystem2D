@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OrthographicCamera.hpp"
+#include "core/Transform.hpp"
 
 namespace SolarSystem2D 
 {
@@ -10,7 +11,7 @@ namespace SolarSystem2D
     public:
         static void init();
         static void beginScene(const OrthographicCamera& camera);
-        static void drawQuad();
+        static void drawQuad(const Transform& transform);
     };
 
-} 
+}

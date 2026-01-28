@@ -4,6 +4,7 @@
 #include "Buffer.hpp"
 #include "Shader.hpp"
 
+#include <glm/glm.hpp>
 #include <glad/glad.h>
 
 #include <memory>
@@ -13,6 +14,7 @@ namespace SolarSystem2D
 
     static std::shared_ptr<VertexArray> s_QuadVAO;
     static std::shared_ptr<Shader> s_Shader;
+    static glm::mat4 s_ViewProjection;
 
     void Renderer2D::init()
     {
@@ -38,9 +40,11 @@ namespace SolarSystem2D
                 layout(location = 0) in vec3 aPos;
 
                 uniform mat4 u_ViewProjection;
+                uniform mat4 u_Transform;
 
-                void main() {
-                    gl_Position = u_ViewProjection * vec4(aPos, 1.0);
+                void main()
+                {
+                    gl_Position = u_ViewProjection * u_Transform * vec4(aPos, 1.0);
                 }
             )";
 
@@ -49,7 +53,8 @@ namespace SolarSystem2D
 
                 out vec4 FragColor;
 
-                void main() {
+                void main()
+                {
                     FragColor = vec4(0.2, 0.7, 1.0, 1.0);
                 }
             )";
@@ -59,14 +64,16 @@ namespace SolarSystem2D
 
     void Renderer2D::beginScene(const OrthographicCamera& camera)
     {
-        s_Shader->setMat4("u_ViewProjection", camera.getViewProjection());
+        s_ViewProjection = camera.getViewProjection();
+        s_Shader->setMat4("u_ViewProjection", s_ViewProjection);
     }
 
-    void Renderer2D::drawQuad()
+    void Renderer2D::drawQuad(const Transform& transform)
     {
+        s_Shader->setMat4("u_Transform", transform.getMatrix());
         s_Shader->bind();
         s_QuadVAO->bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
-} // namespace SolarSystem2D
+} 

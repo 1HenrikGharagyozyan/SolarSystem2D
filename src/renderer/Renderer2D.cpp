@@ -68,9 +68,9 @@ namespace SolarSystem2D
         s_Shader->setMat4("u_ViewProjection", s_ViewProjection);
     }
 
-    void Renderer2D::drawQuad(const Transform& transform)
+    void Renderer2D::drawQuad(const glm::mat4& worldMatrix)
     {
-        s_Shader->setMat4("u_Transform", transform.getMatrix());
+        s_Shader->setMat4("u_Transform", worldMatrix);
         s_Shader->bind();
         s_QuadVAO->bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

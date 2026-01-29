@@ -6,12 +6,15 @@
 #include "renderer/Renderer2D.hpp"
 #include "renderer/OrthographicCamera.hpp"
 
+#include "scene/Entity.hpp"
 #include "scene/Planet.hpp"
 
 #include <glad/glad.h>
 
-namespace SolarSystem2D 
+namespace SolarSystem2D
 {
+
+    Application::~Application() = default;
 
     Application::Application()
     {
@@ -19,39 +22,41 @@ namespace SolarSystem2D
 
         Renderer2D::init();
 
-        // Камера под 16:9
         m_Camera = std::make_unique<OrthographicCamera>(
             -1.6f, 1.6f,
-            -0.9f, 0.9f
-        );
+            -0.9f, 0.9f);
 
-        // Планеты
-        m_Sun   = std::make_unique<Planet>(0.0f, 0.0f, 0.4f);
-        m_Earth = std::make_unique<Planet>(0.8f, 1.0f, 0.15f);
-        m_Moon  = std::make_unique<Planet>(0.25f, 3.0f, 0.07f);
+        // Entities
+        m_SunEntity = std::make_unique<Entity>("Sun");
+        m_EarthEntity = std::make_unique<Entity>("Earth");
+        m_MoonEntity = std::make_unique<Entity>("Moon");
+
+        // Hierarchy
+        m_EarthEntity->getTransform().setParent(&m_SunEntity->getTransform());
+        m_MoonEntity->getTransform().setParent(&m_EarthEntity->getTransform());
+
+        // Planets
+        m_Sun = std::make_unique<Planet>(*m_SunEntity, 0.0f, 0.0f, 0.4f);
+        m_Earth = std::make_unique<Planet>(*m_EarthEntity, 0.8f, 1.0f, 0.15f);
+        m_Moon = std::make_unique<Planet>(*m_MoonEntity, 0.25f, 3.0f, 0.07f);
     }
-
-    Application::~Application() = default;
 
     void Application::run()
     {
         while (!m_Window->shouldClose())
         {
             Time::update();
-
             update(Time::getDeltaTime());
             render();
-
             m_Window->swapBuffers();
             m_Window->pollEvents();
         }
     }
 
-    void Application::update(float deltaTime)
+    void Application::update(float dt)
     {
-        // Update planets
-        m_Earth->update(deltaTime);
-        m_Moon->update(deltaTime);
+        m_Earth->update(dt);
+        m_Moon->update(dt);
     }
 
     void Application::render()
@@ -61,17 +66,9 @@ namespace SolarSystem2D
 
         Renderer2D::beginScene(*m_Camera);
 
-        // Sun
-        Renderer2D::drawQuad(m_Sun->getTransform());
-
-        // Earth
-        Renderer2D::drawQuad(m_Earth->getTransform());
-
-        // Moon (around Earth — manually for now)
-        Transform moonWorld = m_Moon->getTransform();
-        moonWorld.position += m_Earth->getTransform().position;
-        Renderer2D::drawQuad(moonWorld);
-
+        Renderer2D::drawQuad(m_SunEntity->getTransform().getWorldMatrix());
+        Renderer2D::drawQuad(m_EarthEntity->getTransform().getWorldMatrix());
+        Renderer2D::drawQuad(m_MoonEntity->getTransform().getWorldMatrix());
     }
 
-} 
+}

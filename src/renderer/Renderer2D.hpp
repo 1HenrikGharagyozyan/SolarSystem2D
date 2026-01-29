@@ -11,7 +11,7 @@ namespace SolarSystem2D
     public:
         static void init();
         static void beginScene(const OrthographicCamera& camera);
-        static void drawQuad(const Transform& transform);
+        static void drawQuad(const glm::mat4& worldMatrix);
     };
 
 }

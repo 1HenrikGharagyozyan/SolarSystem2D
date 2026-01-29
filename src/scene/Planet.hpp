@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/Transform.hpp"
+#include "Entity.hpp"
 
 namespace SolarSystem2D
 {
@@ -8,17 +8,16 @@ namespace SolarSystem2D
     class Planet
     {
     public:
-        Planet(float orbitRadius, float orbitSpeed, float size);
+        Planet(Entity& entity, float orbitRadius, float orbitSpeed, float size);
 
         void update(float deltaTime);
-        const Transform& getTransform() const;
 
     private:
+        Entity& m_Entity;
+
         float m_OrbitRadius;
         float m_OrbitSpeed; // radians per second
-        float m_Angle; // current angle in orbit
-
-        Transform m_Transform;
+        float m_Angle = 0.0f; // current angle in orbit
     };
 
 }

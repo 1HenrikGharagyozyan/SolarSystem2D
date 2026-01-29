@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include <vector>
-
 namespace SolarSystem2D 
 {
 
@@ -13,21 +11,30 @@ namespace SolarSystem2D
         Transform();
 
         void setParent(Transform* parent);
-        const glm::mat4& getWorldMatrix();
 
-        glm::vec3 position{ 0.0f };
-        float rotation{ 0.0f }; // in radians
-        glm::vec3 scale{ 1.0f };
+        void setPosition(const glm::vec3& position);
+        void setRotation(float rotation);
+        void setScale(const glm::vec3& scale);
+
+        const glm::vec3& getPosition() const;
+        const glm::vec3& getScale() const;
+
+        const glm::mat4& getWorldMatrix();
 
     private:
         void recalcLocalMatrix();
+        void markDirty();
 
     private:
-        glm::mat4 m_LocalMatrix{ 1.0f };
-        glm::mat4 m_WorldMatrix{ 1.0f };
+        glm::vec3 m_Position { 0.0f };
+        float m_Rotation = 0.0f;
+        glm::vec3 m_Scale { 1.0f };
+
+        glm::mat4 m_LocalMatrix { 1.0f };
+        glm::mat4 m_WorldMatrix { 1.0f };
 
         Transform* m_Parent = nullptr;
         bool m_Dirty = true;
     };
 
-}
+} // namespace SolarSystem2D

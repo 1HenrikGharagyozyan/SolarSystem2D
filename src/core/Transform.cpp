@@ -10,19 +10,52 @@ namespace SolarSystem2D
     void Transform::setParent(Transform* parent)
     {
         m_Parent = parent;
+        markDirty();
+    }
+
+    void Transform::setPosition(const glm::vec3& position)
+    {
+        m_Position = position;
+        markDirty();
+    }
+
+    void Transform::setRotation(float rotation)
+    {
+        m_Rotation = rotation;
+        markDirty();
+    }
+
+    void Transform::setScale(const glm::vec3& scale)
+    {
+        m_Scale = scale;
+        markDirty();
+    }
+
+    const glm::vec3& Transform::getPosition() const
+    {
+        return m_Position;
+    }
+
+    const glm::vec3& Transform::getScale() const
+    {
+        return m_Scale;
+    }
+
+    void Transform::markDirty()
+    {
         m_Dirty = true;
     }
 
     void Transform::recalcLocalMatrix()
     {
         glm::mat4 mat(1.0f);
-        mat = glm::translate(mat, position);
-        mat = glm::rotate(mat, rotation, { 0.0f, 0.0f, 1.0f });
-        mat = glm::scale(mat, scale);
+        mat = glm::translate(mat, m_Position);
+        mat = glm::rotate(mat, m_Rotation, { 0.0f, 0.0f, 1.0f });
+        mat = glm::scale(mat, m_Scale);
         m_LocalMatrix = mat;
     }
 
-    const glm::mat4& Transform::getWorldMatrix() 
+    const glm::mat4& Transform::getWorldMatrix()
     {
         if (m_Dirty)
         {
@@ -39,4 +72,4 @@ namespace SolarSystem2D
         return m_WorldMatrix;
     }
 
-}
+} 

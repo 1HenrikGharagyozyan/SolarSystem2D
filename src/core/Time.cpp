@@ -16,7 +16,7 @@ namespace SolarSystem2D
         s_lastTime = now;
     }
 
-    float Time::deltaTime()
+    float Time::getDeltaTime()
     {
         return s_deltaTime;
     }

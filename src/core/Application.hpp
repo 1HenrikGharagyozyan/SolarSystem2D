@@ -6,6 +6,8 @@ namespace SolarSystem2D
 {
 
     class Window;
+    class OrthographicCamera;
+    class Planet;
 
     class Application 
     {
@@ -16,14 +18,16 @@ namespace SolarSystem2D
         void run();
 
     private:
-        void init();
-        void update(float dt);
+        void update(float deltaTime);
         void render();
-        void shutdown();
 
     private:
-        bool m_running;
-        std::unique_ptr<Window> m_window;
+        std::unique_ptr<Window> m_Window;
+        std::unique_ptr<OrthographicCamera> m_Camera;
+
+        std::unique_ptr<Planet> m_Sun;
+        std::unique_ptr<Planet> m_Earth;
+        std::unique_ptr<Planet> m_Moon;
     };
 
-} 
+}

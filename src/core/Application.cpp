@@ -1,68 +1,77 @@
-#include "Application.hpp"
+#include "core/Application.hpp"
 
-#include "Window.hpp"
-#include "Time.hpp"
+#include "core/Window.hpp"
+#include "core/Time.hpp"
 
-#include "renderer/Renderer.hpp"
 #include "renderer/Renderer2D.hpp"
+#include "renderer/OrthographicCamera.hpp"
 
-namespace SolarSystem2D
+#include "scene/Planet.hpp"
+
+#include <glad/glad.h>
+
+namespace SolarSystem2D 
 {
 
     Application::Application()
-        : m_running(true)
     {
-        init();
-    }
+        m_Window = std::make_unique<Window>(1280, 720, "SolarSystem2D");
 
-    Application::~Application()
-    {
-        shutdown();
-    }
-
-    void Application::init()
-    {
-        m_window = std::make_unique<Window>(1280, 720, "Solar System 2D");
-        Renderer::init();
         Renderer2D::init();
+
+        // Камера под 16:9
+        m_Camera = std::make_unique<OrthographicCamera>(
+            -1.6f, 1.6f,
+            -0.9f, 0.9f
+        );
+
+        // Планеты
+        m_Sun   = std::make_unique<Planet>(0.0f, 0.0f, 0.4f);
+        m_Earth = std::make_unique<Planet>(0.8f, 1.0f, 0.15f);
+        m_Moon  = std::make_unique<Planet>(0.25f, 3.0f, 0.07f);
     }
+
+    Application::~Application() = default;
 
     void Application::run()
     {
-        while (m_running && !m_window->shouldClose())
+        while (!m_Window->shouldClose())
         {
             Time::update();
-            update(Time::deltaTime());
+
+            update(Time::getDeltaTime());
             render();
-            m_window->pollEvents();
+
+            m_Window->swapBuffers();
+            m_Window->pollEvents();
         }
     }
 
-    void Application::update(float)
+    void Application::update(float deltaTime)
     {
+        // Update planets
+        m_Earth->update(deltaTime);
+        m_Moon->update(deltaTime);
     }
 
     void Application::render()
     {
-        OrthographicCamera camera(-1.6f, 1.6f, -0.9f, 0.9f);
-        Renderer2D::beginScene(camera);
-        Transform t1;
-        t1.position = { 0.0f, 0.0f, 0.0f };
-        t1.scale = { 0.5f, 0.5f, 1.0f };
+        glClearColor(0.05f, 0.05f, 0.08f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        Renderer2D::drawQuad(t1);
+        Renderer2D::beginScene(*m_Camera);
 
-        Transform t2;
-        t2.position = { 0.8f, 0.0f, 0.0f };
-        t2.scale = { 0.2f, 0.2f, 1.0f };
+        // Sun
+        Renderer2D::drawQuad(m_Sun->getTransform());
 
-        Renderer2D::drawQuad(t2);
+        // Earth
+        Renderer2D::drawQuad(m_Earth->getTransform());
 
-        m_window->swapBuffers();
+        // Moon (around Earth — manually for now)
+        Transform moonWorld = m_Moon->getTransform();
+        moonWorld.position += m_Earth->getTransform().position;
+        Renderer2D::drawQuad(moonWorld);
+
     }
 
-    void Application::shutdown()
-    {
-    }
-
-}
+} 

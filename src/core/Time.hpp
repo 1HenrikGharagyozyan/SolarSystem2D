@@ -7,7 +7,7 @@ namespace SolarSystem2D
     {
     public:
         static void update();
-        static float deltaTime();
+        static float getDeltaTime();
 
     private:
         static float s_deltaTime;

@@ -29,6 +29,8 @@ add_executable(SolarSystem2D
     src/renderer/Renderer2D.cpp
     src/renderer/OrthographicCamera.cpp
     src/core/Transform.cpp
+    src/scene/Planet.cpp
+
 )
 
 target_include_directories(SolarSystem2D

@@ -30,6 +30,7 @@ add_executable(SolarSystem2D
     src/renderer/OrthographicCamera.cpp
     src/core/Transform.cpp
     src/scene/Planet.cpp
+    src/scene/Orbit.cpp
     src/scene/Entity.cpp
 )
 

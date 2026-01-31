@@ -8,18 +8,12 @@
 
 #include "scene/Entity.hpp"
 #include "scene/Planet.hpp"
+#include "scene/Orbit.hpp"
 
 #include <glad/glad.h>
-#include <iostream>
 
 namespace SolarSystem2D
 {
-
-    Application::~Application()
-    {
-        // Ensure renderer releases GL resources while the Window (GL context) is still alive
-        Renderer2D::shutdown();
-    }
 
     Application::Application()
     {
@@ -29,21 +23,55 @@ namespace SolarSystem2D
 
         m_Camera = std::make_unique<OrthographicCamera>(
             -1.6f, 1.6f,
-            -0.9f, 0.9f);
+            -0.9f, 0.9f
+        );
 
-        // Entities
+        // =========================
+        // ENTITIES
+        // =========================
         m_SunEntity = std::make_unique<Entity>("Sun");
-        m_EarthEntity = std::make_unique<Entity>("Earth");
-        m_MoonEntity = std::make_unique<Entity>("Moon");
 
-        // Hierarchy
-        m_EarthEntity->getTransform().setParent(&m_SunEntity->getTransform());
-        m_MoonEntity->getTransform().setParent(&m_EarthEntity->getTransform());
+        m_EarthOrbitEntity  = std::make_unique<Entity>("EarthOrbit");
+        m_EarthVisualEntity = std::make_unique<Entity>("Earth");
 
-        // Planets
-        m_Sun = std::make_unique<Planet>(*m_SunEntity, 0.0f, 0.0f, 0.4f);
-        m_Earth = std::make_unique<Planet>(*m_EarthEntity, 1.0f, 1.0f, 0.15f);
-        m_Moon = std::make_unique<Planet>(*m_MoonEntity, 0.25f, 3.0f, 0.07f);
+        m_MoonOrbitEntity   = std::make_unique<Entity>("MoonOrbit");
+        m_MoonVisualEntity  = std::make_unique<Entity>("Moon");
+
+        // =========================
+        // HIERARCHY
+        // =========================
+        // Earth
+        m_EarthOrbitEntity->getTransform()
+            .setParent(&m_SunEntity->getTransform());
+
+        m_EarthVisualEntity->getTransform()
+            .setParent(&m_EarthOrbitEntity->getTransform());
+
+        // Moon
+        m_MoonOrbitEntity->getTransform()
+            .setParent(&m_EarthOrbitEntity->getTransform());
+
+        m_MoonVisualEntity->getTransform()
+            .setParent(&m_MoonOrbitEntity->getTransform());
+
+
+        // =========================
+        // COMPONENTS
+        // =========================
+        m_Sun   = std::make_unique<Planet>(*m_SunEntity, 0.4f);
+        m_Earth = std::make_unique<Planet>(*m_EarthVisualEntity, 0.15f);
+        m_Moon  = std::make_unique<Planet>(*m_MoonVisualEntity, 0.07f);
+
+        m_EarthOrbit = std::make_unique<Orbit>(
+            *m_EarthOrbitEntity, 1.0f, 1.0f);
+
+        m_MoonOrbit = std::make_unique<Orbit>(
+            *m_MoonOrbitEntity, 0.25f, 3.0f);
+    }
+
+    Application::~Application()
+    {
+        Renderer2D::shutdown();
     }
 
     void Application::run()
@@ -53,6 +81,7 @@ namespace SolarSystem2D
             Time::update();
             update(Time::getDeltaTime());
             render();
+
             m_Window->swapBuffers();
             m_Window->pollEvents();
         }
@@ -60,8 +89,8 @@ namespace SolarSystem2D
 
     void Application::update(float dt)
     {
-        m_Earth->update(dt);
-        m_Moon->update(dt);
+        m_EarthOrbit->update(dt);
+        m_MoonOrbit->update(dt);
     }
 
     void Application::render()
@@ -71,24 +100,17 @@ namespace SolarSystem2D
 
         Renderer2D::beginScene(*m_Camera);
 
-        Renderer2D::drawQuad(m_SunEntity->getTransform().getWorldMatrix(), glm::vec4(1.0f, 0.9f, 0.0f, 1.0f));   // Sun (yellow)
-        Renderer2D::drawQuad(m_EarthEntity->getTransform().getWorldMatrix(), glm::vec4(0.2f, 0.5f, 1.0f, 1.0f)); // Earth (blue)
-        Renderer2D::drawQuad(m_MoonEntity->getTransform().getWorldMatrix(), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));  // Moon (grey)
+        Renderer2D::drawQuad(
+            m_SunEntity->getTransform().getWorldMatrix(),
+            {1.0f, 0.9f, 0.0f, 1.0f});
 
-        // Debug: print world positions
-        {
-            const glm::mat4 &sunWorld = m_SunEntity->getTransform().getWorldMatrix();
-            const glm::mat4 &earthWorld = m_EarthEntity->getTransform().getWorldMatrix();
-            const glm::mat4 &moonWorld = m_MoonEntity->getTransform().getWorldMatrix();
+        Renderer2D::drawQuad(
+            m_EarthVisualEntity->getTransform().getWorldMatrix(),
+            {0.2f, 0.5f, 1.0f, 1.0f});
 
-            glm::vec3 sunPos = glm::vec3(sunWorld[3]);
-            glm::vec3 earthPos = glm::vec3(earthWorld[3]);
-            glm::vec3 moonPos = glm::vec3(moonWorld[3]);
-
-            std::cout << "Positions -> Sun(" << sunPos.x << "," << sunPos.y << ") "
-                      << "Earth(" << earthPos.x << "," << earthPos.y << ") "
-                      << "Moon(" << moonPos.x << "," << moonPos.y << ")\n";
-        }
+        Renderer2D::drawQuad(
+            m_MoonVisualEntity->getTransform().getWorldMatrix(),
+            {0.8f, 0.8f, 0.8f, 1.0f});
     }
 
 }

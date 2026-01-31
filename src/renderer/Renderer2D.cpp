@@ -9,7 +9,7 @@
 
 #include <memory>
 
-namespace SolarSystem2D 
+namespace SolarSystem2D
 {
 
     static std::shared_ptr<VertexArray> s_QuadVAO;
@@ -21,11 +21,10 @@ namespace SolarSystem2D
         float vertices[] = {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            0.5f,  0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
-        };
+            0.5f, 0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f};
 
-        uint32_t indices[] = { 0, 1, 2, 2, 3, 0 };
+        uint32_t indices[] = {0, 1, 2, 2, 3, 0};
 
         s_QuadVAO = std::make_shared<VertexArray>();
         auto vb = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
@@ -52,28 +51,37 @@ namespace SolarSystem2D
                 #version 330 core
 
                 out vec4 FragColor;
+                uniform vec4 u_Color;
 
                 void main()
                 {
-                    FragColor = vec4(0.2, 0.7, 1.0, 1.0);
+                    FragColor = u_Color;
                 }
             )";
 
         s_Shader = std::make_shared<Shader>(vertexSrc, fragmentSrc);
     }
 
-    void Renderer2D::beginScene(const OrthographicCamera& camera)
+    void Renderer2D::shutdown()
+    {
+        // Release GL resources while GL context is still alive
+        s_Shader.reset();
+        s_QuadVAO.reset();
+    }
+
+    void Renderer2D::beginScene(const OrthographicCamera &camera)
     {
         s_ViewProjection = camera.getViewProjection();
         s_Shader->setMat4("u_ViewProjection", s_ViewProjection);
     }
 
-    void Renderer2D::drawQuad(const glm::mat4& worldMatrix)
+    void Renderer2D::drawQuad(const glm::mat4 &worldMatrix, const glm::vec4 &color)
     {
         s_Shader->setMat4("u_Transform", worldMatrix);
+        s_Shader->setFloat4("u_Color", color);
         s_Shader->bind();
         s_QuadVAO->bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
-} 
+}

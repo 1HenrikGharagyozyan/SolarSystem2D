@@ -1,14 +1,15 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <vector>
 
-namespace SolarSystem2D 
+namespace SolarSystem2D
 {
 
-    class Transform 
+    class Transform
     {
     public:
-        Transform();
+        Transform() = default;
 
         void setParent(Transform* parent);
 
@@ -16,13 +17,14 @@ namespace SolarSystem2D
         void setRotation(float rotation);
         void setScale(const glm::vec3& scale);
 
-        const glm::vec3& getPosition() const;
-        const glm::vec3& getScale() const;
+        const glm::vec3& getPosition() const { return m_Position; }
+        const glm::vec3& getScale() const { return m_Scale; }
 
         const glm::mat4& getWorldMatrix();
 
     private:
         void recalcLocalMatrix();
+        void recalcWorldMatrix();
         void markDirty();
 
     private:
@@ -34,7 +36,9 @@ namespace SolarSystem2D
         glm::mat4 m_WorldMatrix { 1.0f };
 
         Transform* m_Parent = nullptr;
+        std::vector<Transform*> m_Children;
+
         bool m_Dirty = true;
     };
 
-} // namespace SolarSystem2D
+} 

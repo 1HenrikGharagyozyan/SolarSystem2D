@@ -41,4 +41,4 @@ namespace SolarSystem2D
         bool m_Dirty = true;
     };
 
-} 
+}

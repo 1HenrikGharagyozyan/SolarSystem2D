@@ -5,17 +5,18 @@
 namespace SolarSystem2D
 {
 
-    void Transform::setParent(Transform *parent)
+    void Transform::setParent(Transform* parent)
     {
         if (m_Parent == parent)
             return;
 
         if (m_Parent)
         {
-            auto &siblings = m_Parent->m_Children;
+            auto& siblings = m_Parent->m_Children;
             siblings.erase(
                 std::remove(siblings.begin(), siblings.end(), this),
-                siblings.end());
+                siblings.end()
+            );
         }
 
         m_Parent = parent;
@@ -26,7 +27,7 @@ namespace SolarSystem2D
         markDirty();
     }
 
-    void Transform::setPosition(const glm::vec3 &position)
+    void Transform::setPosition(const glm::vec3& position)
     {
         m_Position = position;
         markDirty();
@@ -38,7 +39,7 @@ namespace SolarSystem2D
         markDirty();
     }
 
-    void Transform::setScale(const glm::vec3 &scale)
+    void Transform::setScale(const glm::vec3& scale)
     {
         m_Scale = scale;
         markDirty();
@@ -49,12 +50,12 @@ namespace SolarSystem2D
         if (!m_Dirty)
         {
             m_Dirty = true;
-            for (Transform *child : m_Children)
+            for (Transform* child : m_Children)
                 child->markDirty();
         }
     }
 
-    const glm::mat4 &Transform::getWorldMatrix()
+    const glm::mat4& Transform::getWorldMatrix()
     {
         if (m_Dirty)
         {
@@ -70,13 +71,8 @@ namespace SolarSystem2D
     {
         glm::mat4 m(1.0f);
 
-        // ✔️ TRANSLATION FIRST — ORBIT RADIUS
         m = glm::translate(m, m_Position);
-
-        // ✔️ ROTATION (optional, future-proof)
         m = glm::rotate(m, m_Rotation, glm::vec3(0, 0, 1));
-
-        // ✔️ SCALE LAST — SIZE ONLY
         m = glm::scale(m, m_Scale);
 
         m_LocalMatrix = m;
@@ -85,31 +81,9 @@ namespace SolarSystem2D
     void Transform::recalcWorldMatrix()
     {
         if (m_Parent)
-        {
-            // Compose world matrix from parent but ignore parent's scale so that
-            // children's translations (e.g. orbital radii) are not scaled by parent.
-            glm::mat4 parentWorld = m_Parent->getWorldMatrix();
-
-            // Normalize basis vectors (remove scale), preserve rotation and translation
-            glm::vec3 xAxis = glm::vec3(parentWorld[0]);
-            glm::vec3 yAxis = glm::vec3(parentWorld[1]);
-            glm::vec3 zAxis = glm::vec3(parentWorld[2]);
-
-            float sx = glm::length(xAxis);
-            float sy = glm::length(yAxis);
-            float sz = glm::length(zAxis);
-
-            if (sx != 0.0f)
-                parentWorld[0] /= sx;
-            if (sy != 0.0f)
-                parentWorld[1] /= sy;
-            if (sz != 0.0f)
-                parentWorld[2] /= sz;
-
-            m_WorldMatrix = parentWorld * m_LocalMatrix;
-        }
+            m_WorldMatrix = m_Parent->getWorldMatrix() * m_LocalMatrix;
         else
             m_WorldMatrix = m_LocalMatrix;
     }
 
-} 
+}

@@ -9,9 +9,9 @@
 
 #include "scene/Entity.hpp"
 #include "scene/Planet.hpp"
-#include "scene/Orbit.hpp"
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 namespace SolarSystem2D
 {
@@ -36,30 +36,25 @@ namespace SolarSystem2D
         m_MoonOrbitEntity = std::make_unique<Entity>("MoonOrbit");
         m_MoonVisualEntity = std::make_unique<Entity>("MoonVisual");
 
-        // Иерархия
-        m_EarthOrbitEntity->getTransform().setParent(&m_SunEntity->getTransform());
+        // Иерархия: SceneRoot без масштаба, чтобы масштаб Солнца не сжимал орбиты
+        m_SceneRoot = std::make_unique<Entity>("SceneRoot");
+        m_SunEntity->getTransform().setParent(&m_SceneRoot->getTransform());
+        m_EarthOrbitEntity->getTransform().setParent(&m_SceneRoot->getTransform());
         m_EarthVisualEntity->getTransform().setParent(&m_EarthOrbitEntity->getTransform());
 
         m_MoonOrbitEntity->getTransform().setParent(&m_EarthOrbitEntity->getTransform());
         m_MoonVisualEntity->getTransform().setParent(&m_MoonOrbitEntity->getTransform());
 
-        // Планеты
-        m_Sun = std::make_unique<Planet>(*m_SunEntity, 0.4f);
-        m_Earth = std::make_unique<Planet>(*m_EarthOrbitEntity, 0.15f);
-        m_Moon = std::make_unique<Planet>(*m_MoonOrbitEntity, 0.07f);
-
-
-        m_EarthOrbit = std::make_unique<Orbit>(
-            *m_EarthOrbitEntity, 1.0f, 1.0f);
-
-        m_MoonOrbit = std::make_unique<Orbit>(
-            *m_MoonOrbitEntity, 0.25f, 3.0f);
+        // Planet: позиция на orbit-сущности, масштаб на visual-сущности
+        m_Sun   = std::make_unique<Planet>(*m_SunEntity, *m_SunEntity, 0.0f, 0.0f, 0.4f);
+        m_Earth = std::make_unique<Planet>(*m_EarthOrbitEntity, *m_EarthVisualEntity, 1.0f, 1.0f, 0.15f);
+        m_Moon  = std::make_unique<Planet>(*m_MoonOrbitEntity, *m_MoonVisualEntity, 0.25f, 3.0f, 0.07f);
     }
 
     Application::~Application()
     {
-        Renderer2D::shutdown();
         DebugRenderer2D::shutdown();
+        Renderer2D::shutdown();
     }
 
     void Application::run()
@@ -77,8 +72,8 @@ namespace SolarSystem2D
 
     void Application::update(float dt)
     {
-        m_EarthOrbit->update(dt);
-        m_MoonOrbit->update(dt);
+        m_Earth->update(dt);
+        m_Moon->update(dt);
     }
 
     void Application::render()

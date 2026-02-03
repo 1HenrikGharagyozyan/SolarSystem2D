@@ -10,7 +10,6 @@ namespace SolarSystem2D
 
     class Entity;
     class Planet;
-    class Orbit;
 
     class Application
     {
@@ -28,7 +27,8 @@ namespace SolarSystem2D
         std::unique_ptr<Window> m_Window;
         std::unique_ptr<OrthographicCamera> m_Camera;
 
-        // Entities
+        // Entities (SceneRoot has identity transform so Sun scale doesn't affect orbit positions)
+        std::unique_ptr<Entity> m_SceneRoot;
         std::unique_ptr<Entity> m_SunEntity;
 
         std::unique_ptr<Entity> m_EarthOrbitEntity;
@@ -41,9 +41,6 @@ namespace SolarSystem2D
         std::unique_ptr<Planet> m_Sun;
         std::unique_ptr<Planet> m_Earth;
         std::unique_ptr<Planet> m_Moon;
-
-        std::unique_ptr<Orbit> m_EarthOrbit;
-        std::unique_ptr<Orbit> m_MoonOrbit;
     };
     
 }

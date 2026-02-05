@@ -1,7 +1,5 @@
-#include "scene/Planet.hpp"
-
+#include "Planet.hpp"
 #include "core/Transform.hpp"
-
 #include <glm/glm.hpp>
 #include <cmath>
 
@@ -20,15 +18,23 @@ namespace SolarSystem2D
 
     void Planet::update(float dt)
     {
-        m_Angle += m_OrbitSpeed * dt;
+        if (m_OrbitSpeed > 0.0f)
+            m_Angle += m_OrbitSpeed * dt;
 
-        glm::vec3 localPosition{
-            std::cos(m_Angle) * m_OrbitRadius,
-            std::sin(m_Angle) * m_OrbitRadius,
-            0.0f
-        };
+        // Orbit position calculation
+        glm::vec3 orbitPos;
+        orbitPos.x = cos(m_Angle) * m_OrbitRadius;
+        orbitPos.y = sin(m_Angle) * m_OrbitRadius;
+        orbitPos.z = 0.0f;
+        m_OrbitEntity.getTransform().setPosition(orbitPos);
 
-        m_OrbitEntity.getTransform().setPosition(localPosition);
+        // Visual entity is positioned at the center of the orbit entity, so we set it to (0,0) relative to the orbit entity
+        m_VisualEntity.getTransform().setPosition(glm::vec3(0.0f));
+
+        // Rotation around its own axis (e.g. day/night cycle)
+        // float rotationSpeed = 1.0f;
+        // m_VisualEntity.getTransform().setRotation(m_VisualEntity.getTransform().getRotation() + rotationSpeed * dt);
     }
 
-} 
+
+}

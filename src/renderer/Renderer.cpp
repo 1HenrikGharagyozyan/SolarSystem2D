@@ -1,7 +1,7 @@
 #include "Renderer.hpp"
 #include "RenderCommand.hpp"
 
-namespace SolarSystem2D 
+namespace SolarSystem2D
 {
 
     void Renderer::init()
@@ -19,4 +19,4 @@ namespace SolarSystem2D
     {
     }
 
-} // namespace SolarSystem2D
+} 

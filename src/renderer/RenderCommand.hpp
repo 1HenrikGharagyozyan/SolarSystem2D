@@ -1,9 +1,9 @@
 #pragma once
 
-namespace SolarSystem2D 
+namespace SolarSystem2D
 {
 
-    class RenderCommand 
+    class RenderCommand
     {
     public:
         static void init();
@@ -11,4 +11,4 @@ namespace SolarSystem2D
         static void clear();
     };
 
-} 
+}

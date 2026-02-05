@@ -33,6 +33,7 @@ add_executable(SolarSystem2D
     src/scene/Orbit.cpp
     src/scene/Entity.cpp
     src/renderer/DebugRenderer2D.cpp
+    src/scene/Scene.cpp
 )
 
 target_include_directories(SolarSystem2D

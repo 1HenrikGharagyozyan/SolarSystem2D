@@ -1,6 +1,6 @@
 #include "Entity.hpp"
 
-namespace SolarSystem2D 
+namespace SolarSystem2D
 {
 
     Entity::Entity(std::string name)
@@ -8,14 +8,8 @@ namespace SolarSystem2D
     {
     }
 
-    Transform& Entity::getTransform()
-    {
-        return m_Transform;
-    }
+    Transform& Entity::getTransform() { return m_Transform; }
 
-    const std::string& Entity::getName() const
-    {
-        return m_Name;
-    }
+    const std::string& Entity::getName() const { return m_Name; }
 
-} 
+}

@@ -1,26 +1,23 @@
 #include "Transform.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include <algorithm>
 
 namespace SolarSystem2D
 {
 
+    Transform::Transform()
+    {
+        recalcLocalMatrix();
+    }
+
     void Transform::setParent(Transform* parent)
     {
-        if (m_Parent == parent)
-            return;
-
         if (m_Parent)
         {
             auto& siblings = m_Parent->m_Children;
-            siblings.erase(
-                std::remove(siblings.begin(), siblings.end(), this),
-                siblings.end()
-            );
+            siblings.erase(std::remove(siblings.begin(), siblings.end(), this), siblings.end());
         }
 
         m_Parent = parent;
-
         if (m_Parent)
             m_Parent->m_Children.push_back(this);
 
@@ -47,12 +44,9 @@ namespace SolarSystem2D
 
     void Transform::markDirty()
     {
-        if (!m_Dirty)
-        {
-            m_Dirty = true;
-            for (Transform* child : m_Children)
-                child->markDirty();
-        }
+        m_Dirty = true;
+        for (auto child : m_Children)
+            child->markDirty();
     }
 
     const glm::mat4& Transform::getWorldMatrix()
@@ -60,30 +54,22 @@ namespace SolarSystem2D
         if (m_Dirty)
         {
             recalcLocalMatrix();
-            recalcWorldMatrix();
+            if (m_Parent)
+                m_WorldMatrix = m_Parent->getWorldMatrix() * m_LocalMatrix;
+            else
+                m_WorldMatrix = m_LocalMatrix;
             m_Dirty = false;
         }
-
         return m_WorldMatrix;
     }
 
     void Transform::recalcLocalMatrix()
     {
-        glm::mat4 m(1.0f);
+        glm::mat4 T = glm::translate(glm::mat4(1.0f), m_Position);
+        glm::mat4 R = glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 S = glm::scale(glm::mat4(1.0f), m_Scale);
 
-        m = glm::translate(m, m_Position);
-        m = glm::rotate(m, m_Rotation, glm::vec3(0, 0, 1));
-        m = glm::scale(m, m_Scale);
-
-        m_LocalMatrix = m;
-    }
-
-    void Transform::recalcWorldMatrix()
-    {
-        if (m_Parent)
-            m_WorldMatrix = m_Parent->getWorldMatrix() * m_LocalMatrix;
-        else
-            m_WorldMatrix = m_LocalMatrix;
+        m_LocalMatrix = T * R * S;
     }
 
 }

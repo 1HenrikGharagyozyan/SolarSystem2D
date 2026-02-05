@@ -1,13 +1,11 @@
 #pragma once
-
 #include "core/Transform.hpp"
-
 #include <string>
 
-namespace SolarSystem2D 
+namespace SolarSystem2D
 {
 
-    class Entity 
+    class Entity
     {
     public:
         explicit Entity(std::string name);
@@ -20,4 +18,4 @@ namespace SolarSystem2D
         Transform m_Transform;
     };
 
-} 
+}
